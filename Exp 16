@@ -1,0 +1,48 @@
+# EXP 16 – Procedures and Triggers
+
+Date: 13/04/2026
+
+
+## 1. Procedure: Find Minimum and Maximum Salary
+
+CREATE OR REPLACE PROCEDURE min_max_sal
+AS
+min_sal emp2.salary%TYPE;
+max_sal emp2.salary%TYPE;
+BEGIN
+SELECT MIN(salary), MAX(salary)
+INTO min_sal, max_sal
+FROM emp2;
+DBMS_OUTPUT.PUT_LINE('Minimum Salary: ' || min_sal);  
+DBMS_OUTPUT.PUT_LINE('Maximum Salary: ' || max_sal);  
+END;
+/
+
+-- Execution
+SET SERVEROUTPUT ON;
+EXEC min_max_sal;
+
+## 2. Trigger: Validate Salary Range
+
+CREATE OR REPLACE TRIGGER trg_min_max_sal
+BEFORE INSERT OR UPDATE OF salary ON emp2
+FOR EACH ROW
+DECLARE
+min_sal emp2.salary%TYPE;
+max_sal emp2.salary%TYPE;
+BEGIN
+SELECT MIN(salary), MAX(salary)
+INTO min_sal, max_sal
+FROM emp2;
+IF :NEW.salary < min_sal OR :NEW.salary > max_sal THEN  
+    RAISE_APPLICATION_ERROR(-20001,  
+    'Salary must be within existing min and max salary range');  
+END IF;  
+END;
+/
+
+## NOTE:
+
+-- := is used for assignment in PL/SQL (not =)
+-- Trigger now actually enforces a rule
+-- Procedure displays values using DBMS_OUTPUT
