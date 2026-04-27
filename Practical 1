@@ -1,0 +1,28 @@
+1. create a table st_info with attributes prn, name, m1, m2, m3
+create table std_info (prn int, name varchar(20), m1 number, m2 number, m3 number);
+
+2. insert at least 10 rows in the table
+insert into std_info values (1, 'A', 10, 20, 30);
+insert into std_info values (2, 'B', 10, 20, 30);
+insert into std_info values (3, 'C', 10, 20, 30);
+insert into std_info values (4, 'D', 10, 20, 30);
+insert into std_info values (5, 'E', 10, 20, 30);
+insert into std_info values (6, 'F', 10, 20, 30);
+insert into std_info values (7, 'G', 10, 20, 30);
+insert into std_info values (8, 'H', 10, 20, 30);
+insert into std_info values (9, 'I', 10, 20, 30);
+insert into std_info values (10, 'J', 10, 20, 30);
+
+
+3. add attribute total and perc to the table
+alter table std_info
+add (
+    total NUMBER,
+    perc NUMBER
+);
+
+
+4. calculate total and perc 
+update std_info
+set total = m1 + m2 + m3,
+    perc  = (m1 + m2 + m3) / 3;
