@@ -1,0 +1,55 @@
+# EXP 17 – Audit (Triggers)
+
+Date: 07/04/2026 and 13/04/2026
+
+## 1. Create Audit Table (Structure Only)
+
+-- Copy structure of emp2 without data
+CREATE TABLE emp2_audit
+AS
+SELECT * FROM emp2 WHERE 1 = 2;
+
+DESC emp2_audit;
+
+## 2. Add Additional Columns
+
+-- Add columns for audit tracking
+ALTER TABLE emp2_audit
+ADD (
+newsalary NUMBER,
+date_of_modification DATE
+);
+
+
+## 3. Trigger: Audit Salary Updates
+
+CREATE OR REPLACE TRIGGER emp2_aud_tri
+AFTER UPDATE OF salary ON emp2
+FOR EACH ROW
+BEGIN
+INSERT INTO emp2_audit
+(empno, name, category, salary, newsalary, date_of_modification)
+VALUES
+(:OLD.empno, :OLD.name, :OLD.category, :OLD.salary, :NEW.salary, SYSDATE);
+DBMS_OUTPUT.PUT_LINE('EmpNo: ' || :OLD.empno);  
+DBMS_OUTPUT.PUT_LINE('Name: ' || :OLD.name);  
+DBMS_OUTPUT.PUT_LINE('Old Salary: ' || :OLD.salary);  
+DBMS_OUTPUT.PUT_LINE('New Salary: ' || :NEW.salary);  
+END;
+/
+
+## 4. Test the Trigger
+
+SET SERVEROUTPUT ON;
+
+UPDATE emp2
+SET salary = salary + 5000
+WHERE empno = 1;
+
+SELECT * FROM emp2_audit;
+
+## NOTE:
+
+-- Audit table stores old and new salary values
+-- Trigger fires only when salary column is updated
+-- WHERE 1=2 ensures only structure is copied, not data
